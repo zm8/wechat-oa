@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>SVG</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        margin: 100px 200px;
+      }
+
+      .box {
+        width: 200px;
+        height: 200px;
+        border: 1px solid red;
+        position: relative;
+      }
+      .arrow {
+        background: url(./images/arrow.png) no-repeat 0 0 / contain;
+        width: 45px;
+        height: 30px;
+        opacity: 0;
+        offset-path: path("M125.69 0.44 L182.46 16.41 L0.23 113");
+        animation: arrow-go 4s linear infinite;
+      }
+      @keyframes arrow-go {
+        0% {
+          offset-distance: 0%;
+        }
+        5% {
+          offset-distance: 10%;
+          opacity: 1;
+        }
+        90% {
+          offset-distance: 90%;
+          opacity: 1;
+        }
+        100% {
+          offset-distance: 100%;
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="arrow"></div>
+    </div>
+  </body>
+</html>
