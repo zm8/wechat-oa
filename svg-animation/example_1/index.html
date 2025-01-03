@@ -12,42 +12,27 @@
         margin: 100px 200px;
       }
 
-      .box {
-        width: 200px;
-        height: 200px;
+      svg {
         border: 1px solid red;
-        position: relative;
       }
-      .arrow {
-        background: url(./images/arrow.png) no-repeat 0 0 / contain;
-        width: 45px;
-        height: 30px;
-        opacity: 0;
-        offset-path: path("M125.69 0.44 L182.46 16.41 L0.23 113");
-        animation: arrow-go 4s linear infinite;
+      svg line {
+        stroke: black;
+        stroke-width: 5;
+        stroke-dasharray: 10;
+        stroke-dashoffset: 0;
+        animation: dash 2s linear infinite;
       }
-      @keyframes arrow-go {
-        0% {
-          offset-distance: 0%;
-        }
-        5% {
-          offset-distance: 10%;
-          opacity: 1;
-        }
-        90% {
-          offset-distance: 90%;
-          opacity: 1;
-        }
-        100% {
-          offset-distance: 100%;
-          opacity: 0;
+
+      @keyframes dash {
+        to {
+          stroke-dashoffset: -100; /* 虚线反方向移动 */
         }
       }
     </style>
   </head>
   <body>
-    <div class="box">
-      <div class="arrow"></div>
-    </div>
+    <svg width="200" height="200">
+      <line x1="0" x2="100%" y1="50%" y2="50%"></line>
+    </svg>
   </body>
 </html>
