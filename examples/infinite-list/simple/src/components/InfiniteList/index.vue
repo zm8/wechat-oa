@@ -5,7 +5,6 @@ import { computed, onMounted, ref } from "vue";
 const props = defineProps<{
   listData: { value: T; uid: U }[]; // 列表数据，每项包含值和唯一标识符
   itemSize: number; // 每项的高度
-  bufferCount?: number; // 可选的缓冲区数量
 }>();
 
 // 屏幕高度（用于计算可视区域的显示数量）
