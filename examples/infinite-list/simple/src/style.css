@@ -24,3 +24,7 @@ body,
 #app {
   height: 100%;
 }
+
+body {
+  padding: 30px;
+}

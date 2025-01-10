@@ -94,6 +94,5 @@ onMounted(() => {
 /* 列表项样式 */
 .infinite-item {
   border-bottom: 1px solid blue; /* 每项底部的蓝色边框 */
-  overflow: hidden;
 }
 </style>

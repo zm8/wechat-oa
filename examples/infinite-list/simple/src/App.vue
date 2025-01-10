@@ -8,7 +8,7 @@ const data = ref<{ value: string; uid: number }[]>([]);
 for (let i = 100; i < 1000; i++) {
   data.value.push({
     uid: i,
-    value: faker.lorem.sentences(),
+    value: faker.lorem.sentences(2),
   });
 }
 </script>
