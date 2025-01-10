@@ -5,6 +5,25 @@ importers:
   .:
     specifiers: {}
 
+  examples/infinite-list/buffer:
+    specifiers:
+      '@faker-js/faker': ^9.3.0
+      '@vitejs/plugin-vue': ^5.2.1
+      '@vue/tsconfig': ^0.7.0
+      typescript: ~5.6.2
+      vite: ^6.0.5
+      vue: ^3.5.13
+      vue-tsc: ^2.2.0
+    dependencies:
+      '@faker-js/faker': 9.3.0
+      vue: 3.5.13_typescript@5.6.3
+    devDependencies:
+      '@vitejs/plugin-vue': 5.2.1_vite@6.0.7+vue@3.5.13
+      '@vue/tsconfig': 0.7.0_egv2ww6vjuchfsqp7qchczie5e
+      typescript: 5.6.3
+      vite: 6.0.7
+      vue-tsc: 2.2.0_typescript@5.6.3
+
   examples/infinite-list/simple:
     specifiers:
       '@faker-js/faker': ^9.3.0
