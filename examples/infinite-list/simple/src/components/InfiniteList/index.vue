@@ -15,10 +15,10 @@ const scrollTop = ref(0);
 const containerRef = ref<HTMLElement | null>(null);
 
 // 列表总数量
-const totalListHeight = computed(() => props.listData.length);
+const totalItemCount = computed(() => props.listData.length);
 
 // 列表容器的总高度，计算方法为：总数量 * 每项高度
-const containerHeight = computed(() => totalListHeight.value * props.itemSize);
+const containerHeight = computed(() => totalItemCount.value * props.itemSize);
 
 // 可视区域显示的数量，取决于屏幕高度和每项的高度
 const visibleCount = computed(() =>

@@ -21,21 +21,31 @@ const scrollTop = ref(0);
 const containerRef = ref<HTMLElement | null>(null);
 
 // 列表总数量
-const totalListHeight = computed(() => props.listData.length);
+const totalItemCount = computed(() => props.listData.length);
 
 // 列表容器的总高度，计算方法为：总数量 * 每项高度
-const containerHeight = computed(() => totalListHeight.value * props.itemSize);
+const containerHeight = computed(() => totalItemCount.value * props.itemSize);
 
 // 可视区域显示的数量，取决于屏幕高度和每项的高度
 const visibleCount = computed(() =>
   Math.ceil(screenHeight.value / props.itemSize)
 );
 
+// 计算当前可视范围的顶部索引
+const topIndex = computed(() => Math.floor(scrollTop.value / props.itemSize));
+
 // 当前滚动位置对应的起始索引
-const startIndex = computed(() => Math.floor(scrollTop.value / props.itemSize));
+const startIndex = computed(() =>
+  Math.max(0, topIndex.value - props.bufferCount)
+);
 
 // 当前滚动位置对应的结束索引，基于起始索引和可视数量
-const endIndex = computed(() => startIndex.value + visibleCount.value);
+const endIndex = computed(() =>
+  Math.min(
+    totalItemCount.value - 1,
+    topIndex.value + visibleCount.value + props.bufferCount
+  )
+);
 
 // 当前需要渲染的列表项，基于起始索引和结束索引
 const renderedItems = computed(() =>
@@ -73,7 +83,8 @@ onMounted(() => {
         :key="item.uid"
         :style="{ height: `${props.itemSize}px` }"
       >
-        {{ item.value }}
+        <span style="color: red; margin: 0 10px">{{ item.uid }}.</span
+        >{{ item.value }}
       </div>
     </div>
   </div>
@@ -100,5 +111,7 @@ onMounted(() => {
 /* 列表项样式 */
 .infinite-item {
   border-bottom: 1px solid blue; /* 每项底部的蓝色边框 */
+  display: flex;
+  align-items: center;
 }
 </style>

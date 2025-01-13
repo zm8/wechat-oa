@@ -5,9 +5,9 @@ import InfiniteList from "./components/InfiniteList/index.vue";
 
 const data = ref<{ value: string; uid: number }[]>([]);
 
-for (let i = 100; i < 1000; i++) {
+for (let i = 0; i < 1000; i++) {
   data.value.push({
-    uid: i,
+    uid: i + 1,
     value: faker.lorem.sentences(2),
   });
 }
