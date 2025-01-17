@@ -5,6 +5,27 @@ importers:
   .:
     specifiers: {}
 
+  examples/infinite-list/advance:
+    specifiers:
+      '@faker-js/faker': ^9.3.0
+      '@feutopia/vue-hooks': ^0.0.12
+      '@vitejs/plugin-vue': ^5.2.1
+      '@vue/tsconfig': ^0.7.0
+      typescript: ~5.6.2
+      vite: ^6.0.5
+      vue: ^3.5.13
+      vue-tsc: ^2.2.0
+    dependencies:
+      '@faker-js/faker': 9.3.0
+      '@feutopia/vue-hooks': 0.0.12_vue@3.5.13
+      vue: 3.5.13_typescript@5.6.3
+    devDependencies:
+      '@vitejs/plugin-vue': 5.2.1_vite@6.0.7+vue@3.5.13
+      '@vue/tsconfig': 0.7.0_egv2ww6vjuchfsqp7qchczie5e
+      typescript: 5.6.3
+      vite: 6.0.7
+      vue-tsc: 2.2.0_typescript@5.6.3
+
   examples/infinite-list/buffer:
     specifiers:
       '@faker-js/faker': ^9.3.0
@@ -1388,6 +1409,24 @@ packages:
   /@faker-js/faker/9.3.0:
     resolution: {integrity: sha512-r0tJ3ZOkMd9xsu3VRfqlFR6cz0V/jFYRswAIpC+m/DIfAUXq7g8N7wTAlhSANySXYGKzGryfDXwtwsY8TxEIDw==}
     engines: {node: '>=18.0.0', npm: '>=9.0.0'}
+    dev: false
+
+  /@feutopia/mitt/0.0.2:
+    resolution: {integrity: sha512-HjBVPkGJxQz8LbBcOSPBwHVHGeDmQ9fDEU8dL2GINbZxs7d9cYMTaT5aHPyH3e7aGjf4XJvDxR+6K8xw7YzVCg==}
+    dev: false
+
+  /@feutopia/utils/0.0.11:
+    resolution: {integrity: sha512-VOFT09pC6LGXYr0VPM/tgQWo4fihAsrpNKdlAW6nwnVtdNLRf7T8SBap3KjFsHgOLyIHl5TieHiZ5/fFARWm2A==}
+    dev: false
+
+  /@feutopia/vue-hooks/0.0.12_vue@3.5.13:
+    resolution: {integrity: sha512-WeBc0sZMUHhyuaMIara+1ydW/2SPAcs1RkWQk+AP+eH7i7twljPgrCEQoC+Gp4kI1AB+lllAAR5pYCTIBvmIxQ==}
+    peerDependencies:
+      vue: '>=3.0.0'
+    dependencies:
+      '@feutopia/mitt': 0.0.2
+      '@feutopia/utils': 0.0.11
+      vue: 3.5.13_typescript@5.6.3
     dev: false
 
   /@jridgewell/gen-mapping/0.3.8:
