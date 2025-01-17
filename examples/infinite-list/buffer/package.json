@@ -1,5 +1,5 @@
 {
-  "name": "buffer",
+  "name": "infinite-list-buffer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
