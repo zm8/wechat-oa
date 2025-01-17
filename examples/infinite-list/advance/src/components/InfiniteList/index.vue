@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T, U extends number | string">
 import { useResizeObserver } from "@feutopia/vue-hooks";
-import { computed, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 
 // 列表项位置信息的类型定义
 type ItemPositions = {
@@ -10,51 +10,61 @@ type ItemPositions = {
   bottom: number;
 }[];
 
-type ListData = { value: T; uid: U }[];
+type ListItem = { value: T; uid: U };
 
 const props = defineProps<{
-  listData: ListData;
+  items: ListItem[]; // 列表数据
   itemSize: number; // 每个列表项的预估高度
 }>();
 
+// 事件定义
 const emit = defineEmits<{ scrollBottom: [] }>();
 
 // DOM 引用
 const viewportRef = ref<HTMLElement | null>(null); // 可视区域容器
 const listWrapperRef = ref<HTMLElement | null>(null); // 列表包装器
+const extraContentRef = ref<HTMLElement | null>(null); // 额外内容区域
 
-// 视口和滚动相关的状态
+// 滚动相关状态
 const viewportHeight = ref(0); // 视口高度
-const scrollPosition = ref(0); // 当前滚动位置
-const itemPositions = ref<ItemPositions>([]); // 所有列表项的位置信息
+const scrollTop = ref(0); // 当前滚动位置
+const viewportBottom = computed(() => viewportHeight.value + scrollTop.value); // 可视区域底部
+const extraContentHeight = ref(0); // 额外内容高度
+const itemPositions = ref<ItemPositions>([]); // 列表项位置信息
 
 // 位置更新相关的状态
-const lastUpdatedIndex = ref(Infinity); // 最后更新的项索引
-const heightAdjustment = ref(0); // 高度调整值
+const initHeightUpdateState = {
+  lastUpdatedIndex: Infinity,
+  heightAdjustment: 0,
+};
+const heightUpdateState = reactive({ ...initHeightUpdateState });
+const resetHeightUpdateState = () => {
+  Object.assign(heightUpdateState, initHeightUpdateState);
+};
 
 // 可视区域的起始和结束索引
 const startIndex = ref(0);
 const endIndex = ref(0);
 
-const listExtra = ref<HTMLElement | null>(null);
-const listExtraHeight = ref(0);
-
-// 计算列表的总高度
+// 列表的总高度
 const totalHeight = computed(() => {
   const lastItem = itemPositions.value[itemPositions.value.length - 1];
   return (
-    (lastItem.bottom ?? 0) + heightAdjustment.value + listExtraHeight.value
+    (lastItem.bottom ?? 0) +
+    heightUpdateState.heightAdjustment +
+    extraContentHeight.value
   );
 });
 
-// 当前需要渲染的列表项, 因为 slice 方法不包括结束索引对应的项，因此需要对结束索引加 1
+// 当前需要渲染的列表项
+// 因为 slice 方法不包括`结束索引`对应的项，所以`结束索引`需要加 1
 const visibleItems = computed(() =>
-  props.listData.slice(startIndex.value, endIndex.value + 1),
+  props.items.slice(startIndex.value, endIndex.value + 1)
 );
 
 // 计算列表的偏移量
 const listOffset = computed(
-  () => itemPositions.value[startIndex.value]?.top ?? 0,
+  () => itemPositions.value[startIndex.value]?.top ?? 0
 );
 
 /**
@@ -63,28 +73,32 @@ const listOffset = computed(
  * @param direction 查找方向
  * @returns 找到的索引，未找到返回-1
  */
-const findVisibleIndex = (scrollTop: number, direction: "down" | "up") => {
+const findVisibleIndex = (
+  scrollTop: number,
+  direction: "down" | "up"
+): number => {
   let index = startIndex.value;
-  const len = itemPositions.value.length;
-  while (index >= 0 && index < len) {
-    const currentItem = itemPositions.value[index];
-    let top = currentItem.top;
-    let bottom = currentItem.bottom;
+  const itemCount = itemPositions.value.length;
+
+  while (index >= 0 && index < itemCount) {
+    const isLastItem = index === itemCount - 1;
+
+    let { top, bottom } = itemPositions.value[index];
 
     // 处理向下滚动时的高度调整
-    if (direction === "down" && index >= lastUpdatedIndex.value) {
-      top += heightAdjustment.value;
-      bottom += heightAdjustment.value;
+    if (direction === "down" && index >= heightUpdateState.lastUpdatedIndex) {
+      top += heightUpdateState.heightAdjustment;
+      bottom += heightUpdateState.heightAdjustment;
     }
 
-    const isLast = index === len - 1;
     // 检查当前项是否在指定的滚动位置范围内, 或者已经滚动到底部了
-    if (scrollTop >= top && (scrollTop <= bottom || isLast)) {
+    if (scrollTop >= top && (scrollTop <= bottom || isLastItem)) {
       return index;
     }
 
     direction === "down" ? index++ : index--;
   }
+
   return 0;
 };
 
@@ -98,32 +112,43 @@ const updateVisibleRange = (scrollTop: number, direction: "up" | "down") => {
   endIndex.value = findVisibleIndex(scrollTop + viewportHeight.value, "down");
 };
 
-// 滚动事件处理
+/**
+ * 处理滚动事件
+ */
 const handleScroll = (event: Event) => {
-  scrollPosition.value = (event.target as HTMLElement).scrollTop;
-  if (totalHeight.value - (scrollPosition.value + viewportHeight.value) < 1) {
+  scrollTop.value = (event.target as HTMLElement).scrollTop;
+
+  // 检查是否滚动到底部
+  const isAtBottom = totalHeight.value - viewportBottom.value < 1;
+  if (isAtBottom) {
     emit("scrollBottom");
   }
 };
 
-const getXXX = (list: ListData) => {
-  const arr: ItemPositions = [];
-  for (let i = 0; i < list.length; i++) {
-    const currentItem = list[i];
-    const findItem = itemPositions.value.find(
-      (item) => item.uid === currentItem.uid,
+/**
+ * 初始化列表项位置
+ * @param listItems 列表数据
+ * @returns 返回初始化的列表项位置数组
+ */
+const initItemPositions = (listItems: ListItem[]) => {
+  const positions: ItemPositions = [];
+  for (let i = 0; i < listItems.length; i++) {
+    const currentItem = listItems[i];
+    const existingItem = itemPositions.value.find(
+      (item) => item.uid === currentItem.uid
     );
-    const height = findItem?.height ?? props.itemSize;
-    const top = i > 0 ? arr[i - 1].bottom : 0;
+    const height = existingItem?.height ?? props.itemSize;
+    const top = i > 0 ? positions[i - 1].bottom : 0;
     const bottom = top + height;
-    arr[i] = {
+
+    positions.push({
       uid: currentItem.uid,
       height,
       top,
       bottom,
-    };
+    });
   }
-  return arr;
+  return positions;
 };
 
 /**
@@ -131,8 +156,7 @@ const getXXX = (list: ListData) => {
  */
 const resetListState = () => {
   startIndex.value = 0;
-  lastUpdatedIndex.value = Infinity;
-  heightAdjustment.value = 0;
+  resetHeightUpdateState();
 };
 
 /**
@@ -146,8 +170,10 @@ const updateItemPositions = () => {
   // 获取第一个可见项的 UID 和索引
   const firstVisibleItemUid = listItems[0].getAttribute("data-uid");
   const firstVisibleIndex = itemPositions.value.findIndex(
-    (item) => String(item.uid) === firstVisibleItemUid,
+    (item) => String(item.uid) === firstVisibleItemUid
   );
+
+  // 如果没找到
   if (firstVisibleIndex === -1) return;
 
   // 更新可见项的位置信息
@@ -166,45 +192,56 @@ const updateItemPositions = () => {
       currentItem.height = (
         listItems[relativeIndex] as HTMLElement
       ).getBoundingClientRect().height;
-      currentItem.bottom = currentItem.top + currentItem.height;
-    } else {
-      currentItem.bottom = currentItem.top + currentItem.height;
     }
+    currentItem.bottom = currentItem.top + currentItem.height;
 
+    // 是否最后一项
     const isLastItem = i === itemPositions.value.length - 1;
 
-    // 可视区域底部 = 滚动位置 + 视口高度
-    const viewportBottom = scrollPosition.value + viewportHeight.value;
-
-    // 检查是否到达可视区域底部
+    // 核心逻辑是维护列表项之间的连续性，当某个列表项的高度发生变化时，需要相应地调整后续项的位置。
+    // 检查当前项是否在视口底部范围内，或者是最后一个列表项
     if (
-      viewportBottom >= currentItem.top &&
-      (viewportBottom <= currentItem.bottom || isLastItem)
+      viewportBottom.value >= currentItem.top &&
+      (viewportBottom.value <= currentItem.bottom || isLastItem)
     ) {
+      // 更新结束索引为当前项的索引
       endIndex.value = i;
 
-      // 处理下一项的位置调整
+      // 获取下一个列表项
       const nextItem = itemPositions.value[i + 1];
       if (nextItem) {
+        // 如果存在下一项
         if (nextItem.top >= currentItem.bottom) {
+          // 如果下一项的顶部位置大于当前项的底部
+          // 说明中间可能有空隙，需要调整下一项的位置
           nextItem.top = currentItem.bottom;
-          lastUpdatedIndex.value = Infinity;
-          heightAdjustment.value = 0;
+          // 重置高度更新状态，因为不需要进一步调整
+          resetHeightUpdateState();
         } else {
-          lastUpdatedIndex.value = i + 1;
-          heightAdjustment.value = currentItem.bottom - nextItem.top;
+          // 如果下一项的顶部位置小于当前项的底部
+          // 说明可能有重叠，需要记录待调整的信息
+
+          // 记录最后更新的索引位置
+          heightUpdateState.lastUpdatedIndex = i + 1;
+
+          // 计算需要调整的高度差值
+          // 即当前项底部与下一项顶部的差距
+          heightUpdateState.heightAdjustment =
+            currentItem.bottom - nextItem.top;
         }
       } else {
-        lastUpdatedIndex.value = Infinity;
-        heightAdjustment.value = 0;
+        // 如果不存在下一项，说明已经处理到列表末尾
+        // 重置高度更新状态
+        resetHeightUpdateState();
       }
+      // 找到目标项后终止循环
       break;
     }
   }
 };
 
 // 监听滚动位置变化
-watch(scrollPosition, (newScrollTop, prevScrollTop) => {
+watch(scrollTop, (newScrollTop, prevScrollTop) => {
   const direction = newScrollTop - prevScrollTop > 0 ? "down" : "up";
   updateVisibleRange(newScrollTop, direction);
 });
@@ -217,37 +254,39 @@ useResizeObserver(listWrapperRef, () => {
 // 监听视口尺寸变化
 useResizeObserver(viewportRef, (entry) => {
   viewportHeight.value = entry[0].contentBoxSize[0].blockSize;
-  updateVisibleRange(scrollPosition.value, "down");
+  updateVisibleRange(scrollTop.value, "down");
 });
 
-useResizeObserver(listExtra, (entry) => {
-  listExtraHeight.value = entry[0].contentBoxSize[0].blockSize;
+// 监听额外内容尺寸变化
+useResizeObserver(extraContentRef, (entry) => {
+  extraContentHeight.value = entry[0].contentBoxSize[0].blockSize;
 });
 
+// 监听 Items 变化，重置状态并更新可视区域
 watch(
-  () => props.listData,
+  () => props.items,
   (currentListData) => {
     // 重置列表状态
     resetListState();
-    itemPositions.value = getXXX(currentListData);
+    itemPositions.value = initItemPositions(currentListData);
     // 更新可视区域的起始和结束索引
-    updateVisibleRange(scrollPosition.value, "down");
+    updateVisibleRange(scrollTop.value, "down");
   },
   {
     immediate: true,
-  },
+  }
 );
 </script>
 
 <template>
   <div class="virtual-list-viewport" ref="viewportRef" @scroll="handleScroll">
-    <!-- 总高度占位元素 -->
+    <!-- 总高度占位 -->
     <div
       class="virtual-list-placeholder"
       :style="{ height: `${totalHeight}px` }"
     ></div>
 
-    <!-- 可视列表容器 -->
+    <!-- 可视列表区域 -->
     <div
       class="virtual-list-wrapper"
       ref="listWrapperRef"
@@ -261,7 +300,7 @@ watch(
       >
         <slot :item="item"></slot>
       </div>
-      <div ref="listExtra" class="virtual-list-extra">
+      <div ref="extraContentRef" class="virtual-list-extra">
         <slot name="extra"></slot>
       </div>
     </div>
@@ -278,8 +317,8 @@ watch(
 .virtual-list-placeholder {
   position: absolute;
   left: 0;
-  top: 0;
   right: 0;
+  top: 0;
   z-index: -1;
 }
 </style>

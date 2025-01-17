@@ -51,7 +51,7 @@ init();
 <template>
   <div class="box">
     <InfiniteList
-      :listData="listData"
+      :items="listData"
       :itemSize="100"
       @scrollBottom="handleScrollBottom"
     >
