@@ -4,7 +4,7 @@
 
 <style scoped>
 h1 {
-  border: 4px solid #fff;
+  border: 4px solid var(--text-color);
   margin: 20px 200px;
   font-size: 30px;
 }
