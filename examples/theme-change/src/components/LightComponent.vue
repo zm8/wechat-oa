@@ -1,5 +1,5 @@
 <template>
-  <div>组件A</div>
+  <div>组件-Light</div>
 </template>
 
 <style scoped>

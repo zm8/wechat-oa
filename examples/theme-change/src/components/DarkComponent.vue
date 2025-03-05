@@ -1,5 +1,5 @@
 <template>
-  <h1>组件B</h1>
+  <h1>组件-Dark</h1>
 </template>
 
 <style scoped>
