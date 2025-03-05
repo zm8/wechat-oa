@@ -64,6 +64,23 @@ importers:
       vite: 6.0.7
       vue-tsc: 2.2.0_typescript@5.6.3
 
+  examples/theme-change:
+    specifiers:
+      '@vitejs/plugin-vue': ^5.2.1
+      '@vue/tsconfig': ^0.7.0
+      typescript: ~5.7.2
+      vite: ^6.2.0
+      vue: ^3.5.13
+      vue-tsc: ^2.2.4
+    dependencies:
+      vue: 3.5.13_typescript@5.7.3
+    devDependencies:
+      '@vitejs/plugin-vue': 5.2.1_vite@6.2.0+vue@3.5.13
+      '@vue/tsconfig': 0.7.0_5esbry5fwhrlkbjcug25r4dl2a
+      typescript: 5.7.3
+      vite: 6.2.0
+      vue-tsc: 2.2.4_typescript@5.7.3
+
   examples/use-unocss:
     specifiers:
       '@types/postcss-pxtorem': ^6.1.0
@@ -2299,7 +2316,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.5.13
       '@vue/shared': 3.5.13
-      vue: 3.5.13_typescript@5.7.3
+      vue: 3.5.13_typescript@5.6.3
 
   /@vue/shared/3.5.13:
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}

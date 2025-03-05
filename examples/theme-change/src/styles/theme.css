@@ -1,0 +1,10 @@
+:root {
+  --bg-color: #fff; /* 背景白 */
+  --text-color: #333; /* 文字黑 */
+}
+
+/* 暗黑模式 */
+[data-theme="dark"] {
+  --bg-color: #242424; /* 背景黑 */
+  --text-color: #fff; /* 文字白 */
+}
