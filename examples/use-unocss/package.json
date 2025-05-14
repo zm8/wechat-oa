@@ -16,6 +16,7 @@
     "@unocss/preset-rem-to-px": "66.1.0-beta.3",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
+    "postcss": "^8.5.3",
     "postcss-pxtorem": "^6.1.0",
     "typescript": "~5.7.2",
     "unocss": "66.1.0-beta.3",

@@ -12,14 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "search-insights"
-      ]
-    }
-  },
   "packageManager": "pnpm@7.15.0",
   "devDependencies": {
     "vitepress": "^1.6.3",
