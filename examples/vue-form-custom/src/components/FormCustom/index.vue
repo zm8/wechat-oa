@@ -6,7 +6,7 @@ import type { NamePath } from "ant-design-vue/es/form/interface";
 
 const props = defineProps<{
   modelValue: K;
-  fields: FormField<T>[];
+  formFields: FormField<T>[];
   formProps: FormProps<K>;
 }>();
 
@@ -15,7 +15,7 @@ const groupedFields = computed(() => {
   const rows: FormField<T>[][] = [[]];
   let currentSpan = 0;
 
-  props.fields.forEach((item) => {
+  props.formFields.forEach((item) => {
     const itemSpan = item.col || 24;
     if (currentSpan + itemSpan > 24) {
       rows.push([]);

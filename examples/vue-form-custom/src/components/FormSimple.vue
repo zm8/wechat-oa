@@ -76,7 +76,7 @@ const formProps: FormProps<FormState> = {
   ],
 };
 
-const fields: FormField<FormStateKey>[] = [
+const formFields: FormField<FormStateKey>[] = [
   {
     type: "input",
     col: 12,
@@ -121,7 +121,11 @@ const fields: FormField<FormStateKey>[] = [
 </script>
 
 <template>
-  <FormCustom ref="formRef" v-model="formState" v-bind="{ fields, formProps }">
+  <FormCustom
+    ref="formRef"
+    v-model="formState"
+    v-bind="{ formFields, formProps }"
+  >
     <template #input_prefix>
       <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
     </template>
