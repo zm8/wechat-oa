@@ -1,14 +1,13 @@
 <script setup lang="ts" generic="T extends string, K extends Record<T, any>">
 import { computed, ref, type Component } from "vue";
 import { Input, Select, TimePicker, type FormInstance } from "ant-design-vue";
-import type { FormConfig, FormField, FormFooter } from ".";
+import type { FormField, FormFooter, FormProps } from ".";
 import type { NamePath } from "ant-design-vue/es/form/interface";
 
 const props = defineProps<{
   modelValue: K;
   fields: FormField<T>[];
-  formActions: FormConfig<K>;
-  formFooter: FormFooter[];
+  formProps: FormProps<K>;
 }>();
 
 // 自动分组逻辑
@@ -47,14 +46,14 @@ const getComponent = (item: FormField<T>): Component => {
 const formRef = ref<FormInstance>();
 
 const handleSubmit = (values: K) => {
-  props.formActions.onSubmit?.(values);
+  props.formProps.config.onSubmit?.(values);
 };
 
 const handleButtonClick = (footer: FormFooter) => {
   switch (footer.type) {
     case "reset":
       formRef.value?.resetFields();
-      props.formActions.onReset?.();
+      props.formProps.config.onReset?.();
       break;
     default:
       footer.props?.onClick?.();
@@ -101,9 +100,9 @@ defineExpose({
     </a-row>
 
     <!-- 表单按钮 -->
-    <a-form-item v-if="formFooter.length">
+    <a-form-item v-if="formProps.footer.length">
       <a-space>
-        <template v-for="(btn, _index) in formFooter" :key="_index">
+        <template v-for="(btn, _index) in formProps.footer" :key="_index">
           <a-button
             v-bind="btn.props"
             :html-type="btn.type === 'submit' ? 'submit' : 'button'"

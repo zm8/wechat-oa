@@ -3,12 +3,7 @@
 import { defineComponent, h, reactive, ref, toRaw } from "vue";
 import { LockOutlined, UserOutlined } from "@ant-design/icons-vue";
 import { FormCustom } from "./FormCustom";
-import type {
-  FormField,
-  FormFooter,
-  FormConfig,
-  FormInstance,
-} from "./FormCustom";
+import type { FormField, FormProps, FormInstance } from "./FormCustom";
 import { Input } from "ant-design-vue";
 
 interface FormState {
@@ -53,32 +48,33 @@ const resetFormState = () => {
   Object.assign(formState, { ...initState });
 };
 
-const formActions: FormConfig<FormState> = {
-  onSubmit: (res) => {
-    console.log("onSubmit:", res);
+const formProps: FormProps<FormState> = {
+  config: {
+    onSubmit: (res) => {
+      console.log("onSubmit:", res);
+    },
+    onReset: () => {
+      resetFormState();
+      console.log("onReset:", toRaw(formState));
+    },
   },
-  onReset: () => {
-    resetFormState();
-    console.log("onReset:", toRaw(formState));
-  },
+  footer: [
+    {
+      type: "submit",
+      content: "提交",
+      props: {
+        type: "primary",
+      },
+    },
+    {
+      type: "reset",
+      content: "重置",
+      props: {
+        class: "ml-1",
+      },
+    },
+  ],
 };
-
-const formFooter: FormFooter[] = [
-  {
-    type: "submit",
-    content: "提交",
-    props: {
-      type: "primary",
-    },
-  },
-  {
-    type: "reset",
-    content: "重置",
-    props: {
-      class: "ml-1",
-    },
-  },
-];
 
 const fields: FormField<FormStateKey>[] = [
   {
@@ -125,11 +121,7 @@ const fields: FormField<FormStateKey>[] = [
 </script>
 
 <template>
-  <FormCustom
-    ref="formRef"
-    v-model="formState"
-    v-bind="{ fields, formActions, formFooter }"
-  >
+  <FormCustom ref="formRef" v-model="formState" v-bind="{ fields, formProps }">
     <template #input_prefix>
       <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
     </template>

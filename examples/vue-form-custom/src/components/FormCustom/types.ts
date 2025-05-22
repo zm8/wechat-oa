@@ -27,6 +27,7 @@ type Custom<F extends string> = BaseField<"custom", F> & {
   component: Component;
 };
 
+// 表单选项
 export type FormField<F extends string> =
   | Input<F>
   | InputPassword<F>
@@ -34,6 +35,13 @@ export type FormField<F extends string> =
   | TimePicker<F>
   | Custom<F>;
 
+// 事件行为
+type FormConfig<T> = {
+  onSubmit?: (values: T) => void;
+  onReset?: () => void;
+};
+
+// UI 行为
 export type FormFooter = {
   type?: string;
   content: string;
@@ -44,9 +52,10 @@ export type FormFooter = {
   };
 };
 
-export type FormConfig<T> = {
-  onSubmit?: (values: T) => void;
-  onReset?: () => void;
+export type FormProps<T> = {
+  config: FormConfig<T>;
+  footer: FormFooter[];
 };
 
+// 表单的实例
 export { type FormInstance };
