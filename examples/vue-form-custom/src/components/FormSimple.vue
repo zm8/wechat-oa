@@ -35,17 +35,17 @@ const CustomComponent = defineComponent({
 
 const formRef = ref<FormInstance>();
 
-const initState: FormState = {
+const initFormState: FormState = {
   username: "David",
   password: "123456",
   city: "ShangHai",
   customContent: "hello",
 };
 
-const formState = reactive({ ...initState });
+const formState = reactive({ ...initFormState });
 
 const resetFormState = () => {
-  Object.assign(formState, { ...initState });
+  Object.assign(formState, { ...initFormState });
 };
 
 const formProps: FormProps<FormState> = {

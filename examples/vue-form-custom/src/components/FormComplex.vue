@@ -15,16 +15,16 @@ type FormStateKey = keyof FormState;
 
 const formRef = ref<FormInstance>();
 
-const initState: FormState = {
+const initFormState: FormState = {
   username: "David",
   password: "",
   confirmPassword: "",
 };
 
-const formState = reactive({ ...initState });
+const formState = reactive({ ...initFormState });
 
 const resetFormState = () => {
-  Object.assign(formState, { ...initState });
+  Object.assign(formState, { ...initFormState });
 };
 
 const formProps: FormProps<FormState> = {
