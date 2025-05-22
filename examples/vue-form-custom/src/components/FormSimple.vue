@@ -4,10 +4,10 @@ import { defineComponent, h, reactive, ref, toRaw } from "vue";
 import { LockOutlined, UserOutlined } from "@ant-design/icons-vue";
 import { FormCustom } from "./FormCustom";
 import type {
-  FooterButton,
+  FormField,
+  FormFooter,
   FormConfig,
   FormInstance,
-  FormItem,
 } from "./FormCustom";
 import { Input } from "ant-design-vue";
 
@@ -18,7 +18,7 @@ interface FormState {
   customContent: string;
 }
 
-type FormField = keyof FormState;
+type FormStateKey = keyof FormState;
 
 const CustomComponent = defineComponent({
   props: {
@@ -63,7 +63,7 @@ const formActions: FormConfig<FormState> = {
   },
 };
 
-const footerButtons: FooterButton[] = [
+const formFooter: FormFooter[] = [
   {
     type: "submit",
     content: "提交",
@@ -80,7 +80,7 @@ const footerButtons: FooterButton[] = [
   },
 ];
 
-const fields: FormItem<FormField>[] = [
+const fields: FormField<FormStateKey>[] = [
   {
     type: "input",
     col: 12,
@@ -128,7 +128,7 @@ const fields: FormItem<FormField>[] = [
   <FormCustom
     ref="formRef"
     v-model="formState"
-    v-bind="{ fields, formActions, footerButtons }"
+    v-bind="{ fields, formActions, formFooter }"
   >
     <template #input_prefix>
       <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />

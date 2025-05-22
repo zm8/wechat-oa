@@ -1,7 +1,7 @@
 import type { Component } from "vue";
 import type { Rule, FormInstance } from "ant-design-vue/es/form";
 
-type BaseFormItem<T extends string, F extends string> = {
+type BaseField<T extends string, F extends string> = {
   type: T;
   label?: string;
   field: F;
@@ -11,27 +11,30 @@ type BaseFormItem<T extends string, F extends string> = {
   rules?: Rule[];
 };
 
-type InputItem<F extends string> = BaseFormItem<"input", F>;
-type InputPassword<F extends string> = BaseFormItem<"inputPassword", F>;
-type SelectItem<F extends string> = BaseFormItem<"select", F> & {
+type Input<F extends string> = BaseField<"input", F>;
+
+type InputPassword<F extends string> = BaseField<"inputPassword", F>;
+
+type Select<F extends string> = BaseField<"select", F> & {
   props?: {
     options?: { label: string; value: string }[];
   };
 };
-type TimePickerItem<F extends string> = BaseFormItem<"timePicker", F>;
 
-export type CustomItem<F extends string> = BaseFormItem<"custom", F> & {
+type TimePicker<F extends string> = BaseField<"timePicker", F>;
+
+type Custom<F extends string> = BaseField<"custom", F> & {
   component: Component;
 };
 
-export type FormItem<F extends string> =
-  | InputItem<F>
+export type FormField<F extends string> =
+  | Input<F>
   | InputPassword<F>
-  | SelectItem<F>
-  | TimePickerItem<F>
-  | CustomItem<F>;
+  | Select<F>
+  | TimePicker<F>
+  | Custom<F>;
 
-export type FooterButton = {
+export type FormFooter = {
   type?: string;
   content: string;
   props?: {

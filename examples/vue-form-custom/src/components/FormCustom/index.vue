@@ -1,19 +1,19 @@
 <script setup lang="ts" generic="T extends string, K extends Record<T, any>">
 import { computed, ref, type Component } from "vue";
 import { Input, Select, TimePicker, type FormInstance } from "ant-design-vue";
-import type { FormConfig, FormItem, FooterButton } from ".";
+import type { FormConfig, FormField, FormFooter } from ".";
 import type { NamePath } from "ant-design-vue/es/form/interface";
 
 const props = defineProps<{
   modelValue: K;
-  fields: FormItem<T>[];
+  fields: FormField<T>[];
   formActions: FormConfig<K>;
-  footerButtons: FooterButton[];
+  formFooter: FormFooter[];
 }>();
 
 // 自动分组逻辑
 const groupedFields = computed(() => {
-  const rows: FormItem<T>[][] = [[]];
+  const rows: FormField<T>[][] = [[]];
   let currentSpan = 0;
 
   props.fields.forEach((item) => {
@@ -37,7 +37,7 @@ const componentMap: Record<string, Component> = {
   timePicker: TimePicker,
 };
 
-const getComponent = (item: FormItem<T>): Component => {
+const getComponent = (item: FormField<T>): Component => {
   return item.type === "custom"
     ? item.component
     : componentMap[item.type] || Input;
@@ -50,14 +50,14 @@ const handleSubmit = (values: K) => {
   props.formActions.onSubmit?.(values);
 };
 
-const handleButtonClick = (btn: FooterButton) => {
-  switch (btn.type) {
+const handleButtonClick = (footer: FormFooter) => {
+  switch (footer.type) {
     case "reset":
       formRef.value?.resetFields();
       props.formActions.onReset?.();
       break;
     default:
-      btn.props?.onClick?.();
+      footer.props?.onClick?.();
   }
 };
 
@@ -101,9 +101,9 @@ defineExpose({
     </a-row>
 
     <!-- 表单按钮 -->
-    <a-form-item v-if="footerButtons.length">
+    <a-form-item v-if="formFooter.length">
       <a-space>
-        <template v-for="(btn, _index) in footerButtons" :key="_index">
+        <template v-for="(btn, _index) in formFooter" :key="_index">
           <a-button
             v-bind="btn.props"
             :html-type="btn.type === 'submit' ? 'submit' : 'button'"

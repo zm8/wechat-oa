@@ -3,10 +3,10 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons-vue";
 import { reactive, ref, toRaw } from "vue";
 import type {
-  FooterButton,
+  FormField,
+  FormFooter,
   FormConfig,
   FormInstance,
-  FormItem,
 } from "./FormCustom";
 import { FormCustom } from "./FormCustom";
 import type { Rule } from "ant-design-vue/es/form";
@@ -16,7 +16,7 @@ type FormState = {
   password: string;
   confirmPassword: string;
 };
-type FormField = keyof FormState;
+type FormStateKey = keyof FormState;
 
 const formRef = ref<FormInstance>();
 
@@ -42,7 +42,7 @@ const formActions: FormConfig<FormState> = {
   },
 };
 
-const footerButtons: FooterButton[] = [
+const formFooter: FormFooter[] = [
   {
     type: "submit",
     content: "提交",
@@ -79,7 +79,7 @@ const validatePassConfirm = async (_rule: Rule, value: string) => {
   }
 };
 
-const fields: FormItem<FormField>[] = [
+const fields: FormField<FormStateKey>[] = [
   {
     type: "input",
     props: { placeholder: "请输入用户名" },
@@ -113,7 +113,7 @@ const fields: FormItem<FormField>[] = [
   <FormCustom
     ref="formRef"
     v-model="formState"
-    v-bind="{ fields, formActions, footerButtons }"
+    v-bind="{ fields, formActions, formFooter }"
   >
     <template #input_prefix>
       <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
