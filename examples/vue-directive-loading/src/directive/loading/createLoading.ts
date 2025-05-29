@@ -3,7 +3,7 @@
  * @file directive/loading/createLoading.ts
  */
 
-import { createVNode, defineComponent, h, reactive, render } from "vue";
+import { defineComponent, h, reactive, render } from "vue";
 import type { LoadingProps } from "./types";
 import Loading from "./Loading.vue";
 
@@ -19,14 +19,13 @@ export function createLoading(
     render: () => h(Loading, data),
   });
 
-  const vm = createVNode(Comp);
-  const container = document.createElement("div");
+  // 创建虚拟节点
+  const vNode = h(Comp);
   // 将虚拟节点挂载到容器上
-  render(vm, container);
-  target.appendChild(vm.el as HTMLElement);
+  render(vNode, target);
 
   return {
     update: (newProps: Partial<LoadingProps>) => Object.assign(data, newProps),
-    destroy: () => render(null, container),
+    destroy: () => render(null, target),
   };
 }
