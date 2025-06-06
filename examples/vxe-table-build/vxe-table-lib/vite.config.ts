@@ -9,7 +9,6 @@ export default defineConfig({
     lib: {
       entry: "./lib/main.ts",
       formats: ["es"],
-      fileName: (_format, entryName) => `${entryName}/index.js`,
     },
     commonjsOptions: {
       include: [/vxe-table-v3/],
@@ -18,7 +17,6 @@ export default defineConfig({
       external: ["vue", "vue/jsx-runtime"],
       output: {
         assetFileNames: "style.css",
-        chunkFileNames: "chunks/[name].[hash].js",
         entryFileNames: "[name].js",
       },
     },
