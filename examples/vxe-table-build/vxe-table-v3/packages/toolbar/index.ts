@@ -4,7 +4,7 @@ import VxeToolbarComponent from './src/toolbar'
 
 export const VxeToolbar = Object.assign({}, VxeToolbarComponent, {
   install (app: VueConstructor) {
-    app.component(VxeToolbarComponent.name as string + '3', VxeToolbarComponent)
+    app.component(VxeToolbarComponent.name as string, VxeToolbarComponent)
   }
 })
 

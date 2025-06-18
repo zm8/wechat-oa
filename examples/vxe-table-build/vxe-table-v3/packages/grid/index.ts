@@ -4,7 +4,7 @@ import VxeGridComponent from './src/grid'
 
 export const VxeGrid = Object.assign({}, VxeGridComponent, {
   install (app: VueConstructor) {
-    app.component(VxeGridComponent.name as string + '3', VxeGridComponent)
+    app.component(VxeGridComponent.name as string, VxeGridComponent)
   }
 })
 

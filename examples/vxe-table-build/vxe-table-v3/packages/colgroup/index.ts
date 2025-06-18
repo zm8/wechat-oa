@@ -4,7 +4,9 @@ import VxeColgroupComponent from '../table/src/group'
 
 export const VxeColgroup = Object.assign({}, VxeColgroupComponent, {
   install (app: VueConstructor) {
-    app.component(VxeColgroupComponent.name as string + '3', VxeColgroupComponent)
+    app.component(VxeColgroupComponent.name as string, VxeColgroupComponent)
+    // 兼容旧用法
+    app.component('VxeTableColgroup', VxeColgroupComponent)
   }
 })
 

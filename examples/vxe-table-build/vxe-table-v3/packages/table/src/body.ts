@@ -2,11 +2,11 @@ import { PropType, CreateElement } from 'vue'
 import XEUtils from 'xe-utils'
 import { VxeUI } from '../../ui'
 import { isEnableConf, getClass } from '../../ui/src/utils'
-import { getOffsetSize, calcTreeLine, getRowid, createHandleGetRowId } from './util'
+import { getOffsetSize, calcTreeLine, getRowid, createHandleGetRowId, getCellRestHeight } from './util'
 import { updateCellTitle } from '../../ui/src/dom'
 import { getSlotVNs } from '../../ui/src/vn'
 
-import type { VxeTableConstructor, VxeTableDefines, TableInternalData, VxeTablePrivateMethods, TableReactData, VxeComponentStyleType } from '../../../types'
+import type { VxeTableConstructor, VxeTableDefines, TableInternalData, VxeTablePrivateMethods, TableReactData, VxeComponentStyleType, VxeComponentSlotType } from '../../../types'
 
 const { getI18n, renderer, renderEmptyElement } = VxeUI
 
@@ -22,7 +22,7 @@ const isVMScrollProcess = ($xeTable: VxeTableConstructor & VxeTablePrivateMethod
   return !!(isDragResize || (lastScrollTime && Date.now() < lastScrollTime + (delayHover as number)))
 }
 
-function renderLine (h: CreateElement, $xeTable : VxeTableConstructor & VxeTablePrivateMethods, rowid: string, params: VxeTableDefines.CellRenderBodyParams, cellHeight: number) {
+function renderLine (h: CreateElement, $xeTable : VxeTableConstructor & VxeTablePrivateMethods, rowid: string, params: VxeTableDefines.CellRenderBodyParams, cellHeight: number): VxeComponentSlotType[] {
   const tableProps = $xeTable
   const tableInternalData = $xeTable as unknown as TableInternalData
 
@@ -218,6 +218,7 @@ function renderTdColumn (
     $xeTable.triggerCellDblclickEvent(evnt, cellParams)
   }
   let isMergeCell = false
+  let mergeRowspan = 1
   // 合并行或列
   if (mergeBodyFlag && mergeBodyList.length) {
     const spanRest = mergeBodyCellMaps[`${_rowIndex}:${_columnIndex}`]
@@ -228,6 +229,7 @@ function renderTdColumn (
       }
       if (rowspan > 1) {
         isMergeCell = true
+        mergeRowspan = rowspan
         tdAttrs.rowspan = rowspan
       }
       if (colspan > 1) {
@@ -242,9 +244,12 @@ function renderTdColumn (
       return null
     }
     if (rowspan > 1) {
+      isMergeCell = true
+      mergeRowspan = rowspan
       tdAttrs.rowspan = rowspan
     }
     if (colspan > 1) {
+      isMergeCell = true
       tdAttrs.colspan = colspan
     }
   }
@@ -260,7 +265,7 @@ function renderTdColumn (
   }
 
   const isVNAutoHeight = scrollYLoad && !hasEllipsis
-  const cellHeight = rowRest.resizeHeight || cellOpts.height || rowOpts.height || rowRest.height || defaultRowHeight
+  let cellHeight = getCellRestHeight(rowRest, cellOpts, rowOpts, defaultRowHeight)
 
   const isLastColumn = $columnIndex === columns.length - 1
   const isAutoCellWidth = !column.resizeWidth && (column.minWidth === 'auto' || column.width === 'auto')
@@ -272,6 +277,16 @@ function renderTdColumn (
         isVNPreEmptyStatus = true
       } else if (scrollXLoad && !virtualXOpts.immediate && !column.fixed && (_columnIndex < scrollXStore.visibleStartIndex - scrollXStore.preloadSize || _columnIndex > scrollXStore.visibleEndIndex + scrollXStore.preloadSize)) {
         isVNPreEmptyStatus = true
+      }
+    }
+  }
+
+  if (mergeRowspan > 1) {
+    const mEndRow = afterFullData[_rowIndex + mergeRowspan - 1]
+    if (mEndRow) {
+      const meRowRest = fullAllDataRowIdData[getRowid($xeTable, mEndRow)]
+      if (meRowRest) {
+        cellHeight += meRowRest.oTop + getCellRestHeight(meRowRest, cellOpts, rowOpts, defaultRowHeight) - rowRest.oTop - getCellRestHeight(rowRest, cellOpts, rowOpts, defaultRowHeight)
       }
     }
   }
@@ -295,7 +310,7 @@ function renderTdColumn (
     tcStyle.minHeight = `${cellHeight}px`
   }
 
-  const tdVNs = []
+  const tdVNs: VxeComponentSlotType[] = []
   if (fixedHiddenColumn && isAllOverflow) {
     tdVNs.push(
       h('div', {
@@ -310,8 +325,10 @@ function renderTdColumn (
     )
   } else {
     // 渲染单元格
+    if (treeConfig) {
+      tdVNs.push(...renderLine(h, $xeTable, rowid, cellParams, cellHeight))
+    }
     tdVNs.push(
-      ...renderLine(h, $xeTable, rowid, cellParams, cellHeight),
       h('div', {
         key: 'tc',
         class: ['vxe-cell', {
@@ -597,7 +614,7 @@ function renderRows (h: CreateElement, _vm: any, fixedType: 'left' | 'right' | '
         const { showOverflow } = expandColumn || {}
         const colid = expandColumn.id
         const colRest = fullColumnIdData[colid] || {}
-        const hasEllipsis = (XEUtils.isUndefined(showOverflow) || XEUtils.isNull(showOverflow)) ? isAllOverflow : showOverflow
+        const hasEllipsis = XEUtils.eqNull(showOverflow) ? isAllOverflow : showOverflow
         let columnIndex = -1
         let $columnIndex = -1
         let _columnIndex = -1
@@ -718,8 +735,9 @@ export default {
     const tableReactData = $xeTable as unknown as TableReactData
     const tableInternalData = $xeTable as unknown as TableInternalData
     const $xeGrid = $xeTable.$xeGrid
+    const slots = $xeTable.$scopedSlots
 
-    const { xID, $scopedSlots } = $xeTable
+    const { xID } = $xeTable
     const { fixedColumn, fixedType, tableColumn } = props
 
     const { spanMethod, footerSpanMethod, mouseConfig } = tableProps
@@ -802,13 +820,15 @@ export default {
     }
 
     let emptyContent
-    if ($scopedSlots.empty) {
-      emptyContent = $scopedSlots.empty.call(this, { $table: $xeTable, $grid: $xeGrid })
+    const emptySlot = slots ? slots.empty : null
+    const emptyParams = { $table: $xeTable, $grid: $xeGrid }
+    if (emptySlot) {
+      emptyContent = emptySlot.call($xeTable, emptyParams)
     } else {
       const compConf = emptyOpts.name ? renderer.get(emptyOpts.name) : null
       const rtEmptyView = compConf ? (compConf.renderTableEmpty || compConf.renderTableEmptyView || compConf.renderEmpty) : null
       if (rtEmptyView) {
-        emptyContent = getSlotVNs(rtEmptyView.call(this, h, emptyOpts, { $table: $xeTable }))
+        emptyContent = getSlotVNs(rtEmptyView.call($xeTable, h, emptyOpts, emptyParams))
       } else {
         emptyContent = tableProps.emptyText || getI18n('vxe.table.emptyText')
       }
@@ -858,7 +878,7 @@ export default {
          */
           h('colgroup', {
             ref: 'refBodyColgroup'
-          }, renderColumnList.map((column: any, $columnIndex: any) => {
+          }, renderColumnList.map((column, $columnIndex) => {
             return h('col', {
               attrs: {
                 name: column.id
@@ -898,7 +918,7 @@ export default {
                   h('span', {
                     class: 'vxe-table--cell-main-area-btn',
                     on: {
-                      mousedown (evnt: any) {
+                      mousedown (evnt: MouseEvent) {
                         if ($xeTable.triggerCellAreaExtendMousedownEvent) {
                           $xeTable.triggerCellAreaExtendMousedownEvent(evnt, { $table: $xeTable, fixed: fixedType, type: renderType })
                         }
