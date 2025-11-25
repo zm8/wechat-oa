@@ -29,6 +29,7 @@ if (process.env.npm_lifecycle_event && process.env.npm_lifecycle_event.indexOf('
 }
 
 module.exports = defineConfig({
+  lintOnSave: false,
   transpileDependencies: true,
   productionSourceMap: false,
   pages: {

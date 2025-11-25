@@ -1,8 +1,12 @@
+
 <template>
   <div>
-    <vxe-grid v-bind="gridOptions">
+    <div>
+      <vxe-button @click="scrollToRow(gridOptions.data[3])">定位第4行</vxe-button>
+    </div>
+    <vxe-grid v-bind="gridOptions" ref="gridRef">
       <template #rateAddress>
-        <span>标题显示原生 title ___________________________</span>
+        <span>标题显示原生 title</span>
       </template>
     </vxe-grid>
   </div>
@@ -12,17 +16,18 @@
 export default {
   data () {
     const gridOptions = {
+      height: 300,
       showFooter: true,
       rowConfig: {
         isHover: true
       },
       columns: [
         { type: 'seq', width: 70 },
-        { field: 'name', title: '名称', showOverflow: 'ellipsis' },
-        { field: 'role', title: '角色', showOverflow: true },
-        { field: 'date', title: '标题溢出，显示为 tooltip xxxxxxxxxx', showHeaderOverflow: true, showOverflow: 'title', showFooterOverflow: true },
-        { field: 'rate', title: 'Rate', showHeaderOverflow: 'title', slots: { header: 'rateAddress' } },
-        { field: 'address', title: '不换行不换行不换行不换行不换行不换行不换行不换行不换行', width: 160 }
+        { field: 'name', width: 'auto', title: '名称', showOverflow: 'ellipsis' },
+        { field: 'role', width: 'auto', title: '角色', showOverflow: true },
+        { field: 'date', width: 'auto', title: '标题溢出，显示为 tooltip xxxxxxxxxx', showHeaderOverflow: true, showOverflow: 'title', showFooterOverflow: true },
+        { field: 'rate', width: 'auto', title: 'Rate', showHeaderOverflow: 'title', slots: { header: 'rateAddress' } },
+        { field: 'address', width: 160, title: '不换行不换行不换行不换行不换行不换行不换行不换行不换行' }
       ],
       data: [
         { name: 'Test1', role: '前端', date: '内容显示原生 title', rate: 5, address: 'address1' },
@@ -52,6 +57,21 @@ export default {
     return {
       gridOptions
     }
+  },
+  methods: {
+    scrollToCol(field) {
+      const $grid = this.$refs.gridRef;
+      if ($grid) {
+        $grid.scrollToColumn(field);
+      }
+    },
+    scrollToRow(row) {
+      const $grid = this.$refs.gridRef;
+      if ($grid) {
+        $grid.scrollToRow(row);
+      }
+    }
   }
+
 }
 </script>
