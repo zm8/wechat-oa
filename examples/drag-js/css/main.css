@@ -1,0 +1,211 @@
+body.dragging {
+  cursor: col-resize; /* 光标会变成左右双箭头的样式 */
+}
+
+body.draggin .left-container,
+body.draggin .right-container {
+  pointer-events: none; /* 重要, 对于 iframe 的嵌套的页面，有的时候拖拽的动作会半路被暂停了 */
+}
+
+/********************* 容器 *********************/
+.wrapper-container {
+  height: 100%;
+}
+
+.header-container {
+  height: 50px;
+  background-color: #0195df;
+}
+
+.content-container {
+  display: flex;
+  height: 100%;
+  padding: 0 40px;
+  background-color: green;
+}
+
+.left-container,
+.right-container {
+  height: 100%;
+  width: 50%;
+}
+
+.left-container {
+  flex-shrink: 0;
+  background-color: red;
+}
+
+.left-container.animating {
+  transition: width 0.4s ease;
+}
+
+.right-container {
+  flex-grow: 1;
+  order: 1;
+  background-color: yellow;
+}
+
+/********************* 分割线 *********************/
+.divider-container {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  order: 0;
+
+  cursor: col-resize; /* 光标会变成左右双箭头的样式 */
+  position: relative;
+  z-index: 100;
+  width: 20px;
+  height: 100%;
+  background-color: #fff;
+}
+
+.divider-container .divider-line {
+  width: 2px;
+  background-color: #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+/* 手柄样式 */
+.divider-container .drag-handle {
+  display: flex;
+  justify-content: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  cursor: pointer;
+  width: 100%;
+}
+
+.divider-container .drag-handle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 10px;
+  height: 70px;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+/* 小孔样式 */
+.divider-container .dh-hole {
+  width: 4px;
+  height: 2px;
+  background-color: white;
+  border-radius: 1px;
+  margin-top: 5px;
+}
+
+.divider-container .dh-hole:first-child {
+  margin-top: 0;
+}
+
+/* 分割线高亮: 中线, 手柄效果 */
+.divider-container.is-hovered .divider-line,
+.divider-container.is-hovered .drag-handle-content,
+body.dragging .divider-container .divider-line,
+body.dragging .divider-container .drag-handle-content {
+  background-color: #0195df;
+}
+
+/* 双箭头 */
+.divider-container .double-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  height: 50px;
+  width: 0;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  overflow: hidden;
+  cursor: pointer;
+
+  opacity: 0;
+  transition: width 0.5s ease, opacity 0.5s ease;
+}
+
+.divider-container .double-arrow:hover {
+  background-color: #fff;
+}
+
+/* 分割线高亮效果 */
+.divider-container.is-hovered .double-arrow {
+  width: 30px;
+  opacity: 1;
+}
+
+.divider-container .double-arrow::before {
+  content: "";
+  display: block;
+  height: 25px;
+  width: 25px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(1);
+  transition: transform 0.2s ease;
+}
+
+.divider-container .double-arrow:hover::before {
+  transform-origin: center;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.divider-container .left-double-arrow {
+  margin-top: 70px;
+  right: 11px;
+}
+
+.divider-container .right-double-arrow {
+  margin-top: -70px;
+  left: 11px;
+}
+
+.divider-container .left-double-arrow::before {
+  left: 1px;
+  background-image: url(../images/left-double-arrow.svg);
+}
+
+.divider-container .right-double-arrow::before {
+  right: 1px;
+  background-image: url(../images/right-double-arrow.svg);
+}
+
+/* 退出全屏提示 */
+.exit-full-screen {
+  display: none; /* 默认隐藏 */
+  position: absolute;
+  z-index: 1000;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 310px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.exit-full-screen .efs-content {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 100%;
+}
+
+.exit-full-screen .efs-key {
+  border: 1px solid #fff;
+  border-radius: 2px;
+  padding: 0 4px;
+  margin: 0 10px;
+}
