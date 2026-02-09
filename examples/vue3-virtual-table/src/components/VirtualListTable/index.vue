@@ -20,7 +20,7 @@ defineOptions({
 const props = withDefaults(defineProps<Props<T>>(), {
   estimatedItemSize: 40,
   bufferCount: 10,
-  height: 1000,
+  height: 500,
 });
 
 const emits = defineEmits();
@@ -55,65 +55,6 @@ const visibleData = computed(() => {
   return props.listData.slice(startIndex, endIndex);
 });
 
-/******************** watch ********************/
-watch(
-  visibleData,
-  (val) => {
-    emits('change', val);
-  },
-  {
-    immediate: true,
-  },
-);
-
-watch(
-  props.listData,
-  () => {
-    fixStartIndex();
-    rebuildPositions();
-    // 由于 potisions 发生变化, 所以这里需要重置 start
-    start.value = getStartIndex(positions, scrollTop);
-  },
-  {
-    immediate: true,
-  },
-);
-
-/******************** lifeCycle  ********************/
-onMounted(() => {
-  initElement();
-  addEvent();
-});
-
-onBeforeUnmount(() => {
-  clearUnlockTimer();
-  removeEvent();
-});
-
-onActivated(() => {
-  if (isActive) return;
-  isActive = true;
-  if (scrollBoxRef.value) {
-    scrollBoxRef.value.scrollTop = scrollTop;
-  }
-  ignoreResize = true;
-  nextTick(() => {
-    releaseResizeLock();
-  });
-});
-
-onDeactivated(() => {
-  isActive = false;
-});
-
-onUpdated(() => {
-  ignoreResize = true;
-  nextTick(() => {
-    updateLayout();
-    releaseResizeLock();
-  });
-});
-
 /******************** methods ********************/
 // 更新布局
 const updateLayout = () => {
@@ -134,7 +75,7 @@ const releaseResizeLock = () => {
 // 初始化元素
 const initElement = () => {
   const $wrapper = containerRef.value?.querySelector('.el-table__body-wrapper');
-  const $tableBody = $wrapper?.querySelector('.el-table__body');
+  const $tableBody = $wrapper?.querySelector('.el-scrollbar');
   if ($tableBody) {
     contentRef.value?.appendChild($tableBody);
   }
@@ -304,6 +245,70 @@ const resetScroll = () => {
   }
 };
 
+/******************** watch ********************/
+watch(
+  visibleData,
+  (val) => {
+    emits('change', val);
+  },
+  {
+    immediate: true,
+  },
+);
+
+watch(
+  props.listData,
+  () => {
+    fixStartIndex();
+    rebuildPositions();
+    // 由于 potisions 发生变化, 所以这里需要重置 start
+    start.value = getStartIndex(positions, scrollTop);
+  },
+  {
+    immediate: true,
+  },
+);
+
+/******************** lifeCycle  ********************/
+
+onActivated(() => {
+  if (isActive) return;
+  isActive = true;
+  if (scrollBoxRef.value) {
+    scrollBoxRef.value.scrollTop = scrollTop;
+  }
+  ignoreResize = true;
+  nextTick(() => {
+    releaseResizeLock();
+  });
+});
+
+onDeactivated(() => {
+  isActive = false;
+});
+
+// 监听更新
+onUpdated(() => {
+  ignoreResize = true;
+  nextTick(() => {
+    updateLayout();
+    releaseResizeLock();
+  });
+});
+
+// 卸载前
+onBeforeUnmount(() => {
+  clearUnlockTimer();
+  removeEvent();
+});
+
+// 挂载
+onMounted(() => {
+  initElement();
+  addEvent();
+  updateLayout();
+});
+
 /******************** expose  ********************/
 defineExpose({
   resetScroll,
@@ -313,18 +318,22 @@ defineExpose({
 <template>
   <div ref="container">
     <slot></slot>
-    <div ref="scrollBox" @scroll="onScrollEvent" class="scrollBox">
+    <div
+      ref="scrollBox"
+      @scroll="onScrollEvent"
+      class="scrollBox"
+      :style="{ maxHeight: height + 'px' }"
+    >
       <div ref="content"></div>
+      <div ref="placeholder" class="placeholder"></div>
     </div>
-    <div ref="placeholder" class="placeholder"></div>
   </div>
 </template>
 
 <style scoped>
 .scrollBox {
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
 }
 
 .placeholder {
