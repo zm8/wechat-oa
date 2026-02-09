@@ -1,9 +1,7 @@
-<script setup lang="ts"></script>
+<script lang="ts">
+import TableBigData from './components/TableBigData/index.vue';
+</script>
 
 <template>
-  <div>
-    <h1>aa</h1>
-    <h2>bbb</h2>
-    <el-button type="primary">Primary</el-button>
-  </div>
+  <TableBigData />
 </template>

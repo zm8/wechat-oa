@@ -133,8 +133,8 @@ const releaseResizeLock = () => {
 
 // 初始化元素
 const initElement = () => {
-  const $wrapper = containerRef.value?.querySelector('.giop-table_body-wrapper');
-  const $tableBody = $wrapper?.querySelector('.giop-table__body');
+  const $wrapper = containerRef.value?.querySelector('.el-table__body-wrapper');
+  const $tableBody = $wrapper?.querySelector('.el-table__body');
   if ($tableBody) {
     contentRef.value?.appendChild($tableBody);
   }

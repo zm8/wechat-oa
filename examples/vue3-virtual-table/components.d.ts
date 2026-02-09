@@ -13,7 +13,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     Components: typeof import('./src/components/index.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElTable: typeof import('element-plus/es')['ElTable']
+    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     Table: typeof import('./src/components/Table/index.vue')['default']
+    TableBigData: typeof import('./src/components/TableBigData/index.vue')['default']
     VirtualListTable: typeof import('./src/components/VirtualListTable/index.vue')['default']
   }
 }
