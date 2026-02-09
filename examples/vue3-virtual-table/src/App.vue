@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import type { TableData } from './components/TableBigData/types';
 
 const tableBigData = ref<TableData>([]);
-const tableData = ref<TableData>([]);
+const tableRenderData = ref<TableData>([]);
 
 const initData = () => {
   const arr = [];
@@ -25,12 +25,12 @@ onMounted(() => {
 });
 
 const renderVirtualData = (data: TableData) => {
-  tableData.value = data;
+  tableRenderData.value = data;
 };
 </script>
 
 <template>
   <VertualListTable :list-data="tableBigData" @change="renderVirtualData">
-    <TableBigData :data="tableData" />
+    <TableBigData :data="tableRenderData" />
   </VertualListTable>
 </template>
