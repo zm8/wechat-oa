@@ -142,13 +142,15 @@ const onScrollEvent = (e: Event) => {
 // 重建 positions
 const rebuildPositions = () => {
   const newCacheHeight = new Map();
-  positions = [];
-  props.listData.forEach((item, index) => {
-    const height = props.estimatedItemSize;
+  positions = props.listData.map((item, index) => {
+    let height: number;
     if (cacheHeight.has(item.id)) {
+      height = cacheHeight.get(item.id) as number;
       newCacheHeight.set(item.id, height);
+    } else {
+      height = props.estimatedItemSize;
     }
-    positions[index] = {
+    return {
       id: item.id,
       height,
       top: index * height,
@@ -157,11 +159,16 @@ const rebuildPositions = () => {
   cacheHeight = newCacheHeight;
 };
 
-// 防止 start 越界
-const fixStartIndex = () => {
-  if (start.value >= props.listData.length) {
-    start.value = Math.max(props.listData.length - 1, 0);
-  }
+// 初始化 positions
+const initPositions = () => {
+  positions = props.listData.map((item, index) => {
+    const height = props.estimatedItemSize;
+    return {
+      id: item.id,
+      height,
+      top: index * height,
+    };
+  });
 };
 
 // 二分法查找 startIndex
@@ -257,15 +264,11 @@ watch(
 );
 
 watch(
-  props.listData,
+  () => props.listData,
   () => {
-    fixStartIndex();
     rebuildPositions();
     // 由于 potisions 发生变化, 所以这里需要重置 start
     start.value = getStartIndex(positions, scrollTop);
-  },
-  {
-    immediate: true,
   },
 );
 
@@ -306,6 +309,7 @@ onBeforeUnmount(() => {
 onMounted(() => {
   initElement();
   addEvent();
+  initPositions();
   updateLayout();
 });
 

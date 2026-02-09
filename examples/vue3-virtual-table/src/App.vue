@@ -2,23 +2,27 @@
 import TableBigData from './components/TableBigData/index.vue';
 import VertualListTable from './components/VirtualListTable/index.vue';
 import { faker } from '@faker-js/faker';
-import { reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { TableData } from './components/TableBigData/types';
 
-const tableBigData = reactive<TableData>([]);
+const tableBigData = ref<TableData>([]);
 const tableData = ref<TableData>([]);
 
 const initData = () => {
+  const arr = [];
   for (let i = 0; i < 100; i++) {
-    tableBigData.push({
+    arr.push({
       id: crypto.randomUUID(),
       name: i + 1 + '. ' + faker.internet.username(),
       email: faker.internet.email(),
     });
   }
+  tableBigData.value = arr;
 };
 
-initData();
+onMounted(() => {
+  initData();
+});
 
 const renderVirtualData = (data: TableData) => {
   tableData.value = data;
