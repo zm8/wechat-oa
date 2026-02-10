@@ -424,6 +424,64 @@ importers:
         specifier: ^3.0.2
         version: 3.2.11(@types/node@24.10.10)(sass@1.89.1)(terser@5.41.0)
 
+  examples/vue3-merge-table:
+    dependencies:
+      vue:
+        specifier: ^3.5.27
+        version: 3.5.27(typescript@5.9.3)
+    devDependencies:
+      '@tsconfig/node24':
+        specifier: ^24.0.4
+        version: 24.0.4
+      '@types/node':
+        specifier: ^24.10.9
+        version: 24.10.10
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.3
+        version: 6.0.4(vite@7.3.1(@types/node@24.10.10)(jiti@2.6.1)(sass@1.89.1)(terser@5.41.0)(yaml@2.8.0))(vue@3.5.27(typescript@5.9.3))
+      '@vue/eslint-config-typescript':
+        specifier: ^14.6.0
+        version: 14.6.0(eslint-plugin-vue@10.7.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.2(jiti@2.6.1))))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      '@vue/tsconfig':
+        specifier: ^0.8.1
+        version: 0.8.1(typescript@5.9.3)(vue@3.5.27(typescript@5.9.3))
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2(jiti@2.6.1)
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-oxlint:
+        specifier: ~1.42.0
+        version: 1.42.0
+      eslint-plugin-vue:
+        specifier: ~10.7.0
+        version: 10.7.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.2(jiti@2.6.1)))
+      jiti:
+        specifier: ^2.6.1
+        version: 2.6.1
+      npm-run-all2:
+        specifier: ^8.0.4
+        version: 8.0.4
+      oxlint:
+        specifier: ~1.42.0
+        version: 1.42.0
+      prettier:
+        specifier: 3.8.1
+        version: 3.8.1
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.10)(jiti@2.6.1)(sass@1.89.1)(terser@5.41.0)(yaml@2.8.0)
+      vite-plugin-vue-devtools:
+        specifier: ^8.0.5
+        version: 8.0.5(vite@7.3.1(@types/node@24.10.10)(jiti@2.6.1)(sass@1.89.1)(terser@5.41.0)(yaml@2.8.0))(vue@3.5.27(typescript@5.9.3))
+      vue-tsc:
+        specifier: ^3.2.4
+        version: 3.2.4(typescript@5.9.3)
+
   examples/vue3-virtual-table:
     dependencies:
       element-plus:
