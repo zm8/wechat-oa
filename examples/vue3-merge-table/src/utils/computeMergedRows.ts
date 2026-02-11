@@ -60,7 +60,7 @@ export default function computeMergedRows<T extends object>(data: T[], rules: Me
         s.start = i;
         s.count = 1;
       } else {
-        // 只有当有 keys 且所有的 key 对应的值都相等时
+        // 存在 keys 且所有的 key 对应的值都相等时
         const isSame =
           s.keys && s.keys.length > 0
             ? s.keys.every((k) => currRow[k] === (s.prevRow as T)[k])
@@ -88,9 +88,8 @@ export default function computeMergedRows<T extends object>(data: T[], rules: Me
 
   // 3. 循环结束，计算所有列的最后遗留的一组
   state.forEach((s) => {
-    const colStore = rowSpanObj[s.col];
-    if (s.count > 0 && colStore && s.start !== null) {
-      colStore[s.start] = [s.count, 1];
+    if (s.count > 0 && s.start !== null) {
+      rowSpanObj[s.col]![s.start] = [s.count, 1];
     }
   });
 
