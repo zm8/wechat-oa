@@ -26,7 +26,6 @@ const mergeRules: MergedRules<TableItem> = [
   },
   {
     col: 2,
-    keys: ['type', 'subType'],
     getSpan: (row: TableItem) => {
       if (row.title) {
         return [0, 0];
@@ -35,12 +34,13 @@ const mergeRules: MergedRules<TableItem> = [
   },
   {
     col: 3,
-    keys: ['type', 'subType'],
+    keys: ['type', 'group'],
     getSpan: (row: TableItem) => {
       if (row.title) {
         return [0, 0];
       }
     },
+    filter: (row) => row._canAddGroup,
   },
 ];
 
@@ -53,7 +53,12 @@ const arraySpanMethod: TableInstance['spanMethod'] = ({ rowIndex, columnIndex })
 
 <template>
   <el-table :data="tableData" :span-method="arraySpanMethod" border>
-    <el-table-column prop="group" label="组" />
+    <el-table-column prop="group">
+      <template #default="scope">
+        <div v-if="scope.row.title">{{ scope.row.title }}</div>
+        <div v-else>{{ scope.row.group }}</div>
+      </template>
+    </el-table-column>
     <el-table-column prop="name" label="选项" />
     <el-table-column prop="content" label="内容">
       <el-input />

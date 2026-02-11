@@ -62,13 +62,6 @@ export default [
     type: 'FinOrg',
     subType: 'FinRecevier',
     name: '收款行',
-    _addBtn: true,
-    group: '1',
-  },
-  {
-    type: 'FinOrg',
-    subType: 'FinTransfer',
-    name: '中转行',
     group: '1',
   },
 ];

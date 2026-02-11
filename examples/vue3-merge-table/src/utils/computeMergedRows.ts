@@ -2,7 +2,7 @@ type BaseRule<T> = {
   col: number;
   keys?: (keyof T)[];
   getSpan?: (row: T) => [number, number] | void;
-  filter?: (row: T) => boolean;
+  filter?: (row: T) => boolean | void;
 };
 
 export type MergedRules<T> = BaseRule<T>[];
