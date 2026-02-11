@@ -1,5 +1,5 @@
 {
-  "name": "vue3-table-merge-virtual",
+  "name": "vue3-virtual-table",
   "version": "0.0.0",
   "private": true,
   "type": "module",

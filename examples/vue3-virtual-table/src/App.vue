@@ -30,7 +30,15 @@ const renderVirtualData = (data: TableData) => {
 </script>
 
 <template>
-  <VertualListTable :list-data="tableBigData" @change="renderVirtualData">
-    <TableBigData :data="tableRenderData" />
-  </VertualListTable>
+  <div class="box">
+    <VertualListTable :list-data="tableBigData" @change="renderVirtualData">
+      <TableBigData :data="tableRenderData" />
+    </VertualListTable>
+  </div>
 </template>
+
+<style scoped>
+.box {
+  padding: 100px;
+}
+</style>

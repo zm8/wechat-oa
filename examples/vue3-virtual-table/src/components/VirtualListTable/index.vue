@@ -75,7 +75,7 @@ const releaseResizeLock = () => {
 // 初始化元素
 const initElement = () => {
   const $wrapper = containerRef.value?.querySelector('.el-table__body-wrapper');
-  const $tableBody = $wrapper?.querySelector('.el-scrollbar');
+  const $tableBody = $wrapper?.firstElementChild;
   if ($tableBody) {
     contentRef.value?.appendChild($tableBody);
   }

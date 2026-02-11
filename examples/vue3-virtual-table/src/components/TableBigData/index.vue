@@ -9,7 +9,7 @@ defineProps<{ data: TableData }>();
 </script>
 
 <template>
-  <el-table :data>
+  <el-table :data border>
     <el-table-column prop="name" label="Name" />
     <el-table-column prop="email" label="Email" />
   </el-table>
