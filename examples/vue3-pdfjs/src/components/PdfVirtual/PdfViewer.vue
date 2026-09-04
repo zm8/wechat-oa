@@ -1,4 +1,3 @@
-@@ -1,105 +0,0 @@
 <template>
   <div class="h-full">
     <div v-if="!pdfDoc" class="flex h-full items-center justify-center text-xl">加载中...</div>

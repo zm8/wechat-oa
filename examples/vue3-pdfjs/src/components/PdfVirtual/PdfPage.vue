@@ -1,4 +1,3 @@
-@@ -1,142 +0,0 @@
 <template>
   <!-- 隔离 padding，保证 relative 容器尺寸与 canvas 严格一致，防止高亮坐标错位 -->
   <div class="select-none" :class="{ 'pb-2': !isLast }">
