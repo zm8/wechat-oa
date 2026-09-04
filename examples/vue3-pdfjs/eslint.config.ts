@@ -19,4 +19,13 @@ export default defineConfigWithVueTs(
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
   skipFormatting,
+  {
+    name: 'app/custom-rules',
+    rules: {
+      'no-console': 'off',
+      'vue/multi-word-component-names': 'off', // 允许组件名为单个单词 (如 index.vue)
+      '@typescript-eslint/no-explicit-any': 'off', // 允许使用 any 类型
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
 )
